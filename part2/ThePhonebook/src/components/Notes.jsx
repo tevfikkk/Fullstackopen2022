@@ -3,7 +3,7 @@ import React from 'react'
 const Notes = ({ name, number }) => {
   return (
     <li>
-      name: {name} number: {number}
+      <b>name:</b> {name} {number}
     </li>
   )
 }
