@@ -10,7 +10,9 @@ const CountryList = ({ countries, filterer }) => {
   return (
     <div>
       {filteredCountries.length <= 10
-        ? filteredCountries.map(country => <Countries country={country} />)
+        ? filteredCountries.map(country => (
+            <Countries key={country.name} country={country} />
+          ))
         : 'Too many matches specify another filter'}
     </div>
   )
