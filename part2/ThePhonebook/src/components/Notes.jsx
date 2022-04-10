@@ -1,9 +1,8 @@
-import React from 'react'
-
-const Notes = ({ name, number }) => {
+const Notes = ({ person, deletePerson }) => {
   return (
     <li>
-      <b>name:</b> {name} {number}
+      <b>name:</b> {person.name} {person.number}{' '}
+      <button onClick={() => deletePerson(person.id)}>Delete</button>
     </li>
   )
 }

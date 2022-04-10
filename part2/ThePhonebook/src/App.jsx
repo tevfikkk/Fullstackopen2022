@@ -3,6 +3,7 @@ import axios from 'axios'
 import Filter from './components/Filter'
 import PersonForm from './components/PersonForm'
 import Persons from './components/Persons'
+import personService from './services/persons'
 
 const App = () => {
   const [persons, setPersons] = useState([])
@@ -11,10 +12,23 @@ const App = () => {
   const [filterName, setFilterName] = useState('')
 
   useEffect(() => {
-    axios.get('http://localhost:3001/persons').then(res => {
-      setPersons(res.data)
-    })
+    personService
+      .getAll()
+      .then(initialPersons => {
+        setPersons(initialPersons)
+      })
+      .catch(err => console.log(err))
   }, [])
+
+  // delete person
+  const deletePerson = id => {
+    if (window.confirm(`Are you sure you want to delete?`)) {
+      personService.remove(id).then(returnedPerson => {
+        persons.map(person => (person.id !== id ? person : returnedPerson))
+      })
+      setPersons(persons.filter(person => person.id !== id))
+    }
+  }
 
   // filter
   const filteredNames = persons.filter(person =>
@@ -33,12 +47,13 @@ const App = () => {
     const personObject = {
       name: newName,
       number: newNumber,
-      id: persons.length + 1,
     }
     hasSameContact
       ? alert(`${newName} is already added to phonebook`)
-      : setPersons(persons.concat(personObject)),
-      setNewName('')
+      : axios.post('http://localhost:3001/persons', personObject).then(res => {
+          setPersons(persons.concat(res.data))
+          setNewName('')
+        })
     setNewnumber('')
   }
 
@@ -56,7 +71,7 @@ const App = () => {
         setNewnumber={setNewnumber}
       />
       <h2>Numbers</h2>
-      <Persons filteredNames={filteredNames} />
+      <Persons deletePerson={deletePerson} filteredNames={filteredNames} />
     </div>
   )
 }

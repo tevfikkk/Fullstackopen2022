@@ -1,12 +1,17 @@
-import React from 'react'
 import Notes from './Notes'
 
-const Persons = ({ filteredNames }) => {
+const Persons = ({ filteredNames, deletePerson }) => {
   return (
     <div>
       <ul>
         {filteredNames.map(person => (
-          <Notes key={person.id} name={person.name} number={person.number} />
+          <div>
+            <Notes
+              key={person.id}
+              person={person}
+              deletePerson={deletePerson}
+            />
+          </div>
         ))}
       </ul>
     </div>
