@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import axios from 'axios'
 import Filter from './components/Filter'
-import Countries from './components/Countries'
+import CountryList from './components/CountryList'
 
 const App = () => {
   const [countries, setCountries] = useState([])
@@ -13,24 +13,13 @@ const App = () => {
       .then(res => setCountries(res.data))
   }, [])
 
-  // filter countries
-  const filteredCountries = countries.filter(country =>
-    country.name.toLowerCase().includes(filterCountry.toLowerCase().trim())
-  )
-
   return (
     <div>
       <Filter
         filterCountry={filterCountry}
         setFilterCountry={setFilterCountry}
       />
-      <div>
-        {filteredCountries.length <= 10 ? (
-          <Countries filteredCountries={filteredCountries} />
-        ) : (
-          'Too many matches specify another filter'
-        )}
-      </div>
+      <CountryList countries={countries} filterer={filterCountry} />
     </div>
   )
 }

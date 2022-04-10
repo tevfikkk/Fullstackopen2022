@@ -1,18 +1,15 @@
 import { useState } from 'react'
 import CountryInfo from './CountryInfo'
 
-const Countries = ({ filteredCountries }) => {
-  const [showInfo, setShowInfo] = useState(true)
+const Countries = ({ country }) => {
+  const [showInfo, setShowInfo] = useState(false)
   return (
     <div>
-      {filteredCountries.map(country => (
-        <div>
-          {showInfo ? country.name : <CountryInfo country={country} />}
-          <button onClick={() => setShowInfo(!showInfo)}>
-            {showInfo ? 'Show' : 'Hide'}
-          </button>
-        </div>
-      ))}
+      {country.name}
+      <CountryInfo country={country} showInfo={showInfo} />
+      <button onClick={() => setShowInfo(!showInfo)}>
+        {showInfo ? 'Hide' : 'Show'}
+      </button>
     </div>
   )
 }

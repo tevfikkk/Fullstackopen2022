@@ -4,7 +4,7 @@ const Filter = ({ filterCountry, setFilterCountry }) => {
       find countries{' '}
       <input
         value={filterCountry}
-        onChange={e => setFilterCountry(e.target.value)}
+        onChange={e => setFilterCountry(e.target.value.toLowerCase())}
       />
     </div>
   )
