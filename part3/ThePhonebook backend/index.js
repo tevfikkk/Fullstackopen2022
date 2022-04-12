@@ -1,12 +1,17 @@
 const express = require('express')
 const morgan = require('morgan')
-const PORT = 3001
+const cors = require('cors')
+const PORT = process.env.PORT || 3001
 
 const app = express()
 
 // json-parser
 app.use(express.json())
 app.use(morgan('tiny'))
+
+app.use(express.static('dist'))
+
+app.use(cors()) //
 
 app.use(
   morgan((tokens, req, res) => {
