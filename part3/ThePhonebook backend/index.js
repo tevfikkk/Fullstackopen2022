@@ -1,7 +1,9 @@
+require('dotenv').config()
 const express = require('express')
 const morgan = require('morgan')
 const cors = require('cors')
 const PORT = process.env.PORT || 3001
+const Person = require('./models/mongo')
 
 const app = express()
 
@@ -28,45 +30,18 @@ app.use(
   })
 )
 
-let persons = [
-  {
-    id: 1,
-    name: 'Arto Hellas',
-    number: '040-123456',
-  },
-  {
-    id: 2,
-    name: 'Ada Lovelace',
-    number: '39-44-5323523',
-  },
-  {
-    id: 3,
-    name: 'Dan Abramov',
-    number: '12-43-234345',
-  },
-  {
-    id: 4,
-    name: 'Mary Poppendieck',
-    number: '39-23-6423122',
-  },
-]
-
 // get all persons
 app.get('/api/persons', (req, res) => {
-  res.send(persons)
+  Person.find({}).then(person1 => {
+    res.json(person1)
+  })
 })
 
 // get specific person
 app.get('/api/persons/:id', (req, res) => {
-  const id = +req.params.id
-  const person = persons.find(person => person.id === id)
-  if (!person) {
-    return res.status(404).json({
-      message: 'Person is missing',
-    })
-  }
-
-  res.send(person)
+  Person.findById(req.params.id).then(person => {
+    res.json(person)
+  })
 })
 
 // delete a person
@@ -95,17 +70,17 @@ const generateId = () => {
 app.post('/api/persons', (req, res) => {
   const body = req.body
 
+  // Validation
+  if (body.content === undefined) {
+    return res
+      .status(404)
+      .json({ error: 'you didnt prodive the name or number' })
+  }
+
   const newPerson = {
     name: body.name,
     number: body.number,
     id: generateId(),
-  }
-
-  // Validation
-  if (!body.name || !body.number) {
-    return res
-      .status(404)
-      .json({ message: 'you didnt prodive the name or number' })
   }
 
   // find if user already exists
@@ -117,9 +92,9 @@ app.post('/api/persons', (req, res) => {
     })
   }
 
-  console.log(personExists)
-
-  persons = persons.concat(newPerson)
+  newPerson.save().then(savedPerson => {
+    res.json(savedPerson)
+  })
 
   res.status(202).json({
     message: 'New person added',
@@ -127,7 +102,7 @@ app.post('/api/persons', (req, res) => {
   })
 })
 
-// rougly info page
+// rough info page
 app.get('/info', (req, res) => {
   res.send(`<h2>Phonebook has info for ${persons.length} people</h2>
   ${new Date()}`)
